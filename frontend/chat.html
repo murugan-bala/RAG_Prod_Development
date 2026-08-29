@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG Chat</title>
+
+```
+<link rel="stylesheet" href="css/style.css">
+```
+
+</head>
+
+<body>
+
+```
+<div class="chat-container">
+
+    <!-- Header -->
+    <div class="chat-header">
+
+        <div>
+            <h2>RAG Assistant</h2>
+            <p>Ask questions about your documents</p>
+        </div>
+
+        <button id="logoutButton" class="logout-button">
+            Logout
+        </button>
+
+    </div>
+
+    <!-- Chat messages -->
+    <div id="chatMessages" class="chat-messages">
+
+        <div class="bot-message">
+            Hello! Ask me anything about your documents.
+        </div>
+
+    </div>
+
+    <!-- Input area -->
+    <div class="chat-input-area">
+
+        <input
+            type="text"
+            id="questionInput"
+            placeholder="Ask your question..."
+        >
+
+        <button id="sendButton">
+            Send
+        </button>
+
+    </div>
+
+</div>
+
+<script src="js/chat.js"></script>
+```
+
+</body>
+</html>
