@@ -4,4 +4,10 @@ mysql-connector-python
 pydantic
 openai
 python-dotenv
+pypdf
+
+faiss-cpu 
+openai 
+numpy
+sentence-transformers
 
