@@ -104,11 +104,8 @@ Create `.env`:
 OPENAI_API_KEY=your_api_key
 ```
 
-Do not commit `.env` to GitHub.
-
 ## Future Improvements
 
-* PDF/document upload
 * Better authentication
 * RAG evaluation
 * Conversation history
