@@ -3,19 +3,41 @@
 A simple RAG-based web application built using **HTML, CSS, JavaScript, FastAPI, MySQL, FAISS, and OpenAI API**.
 
 ## Project Structure
-
 ```text
 rag_project/
 │
-├── frontend/          # HTML, CSS, JavaScript
-├── backend/           # FastAPI backend
-├── documents/         # PDF/TXT documents
-├── vector_db/         # FAISS vector database
-├── logs/              # Application/query logs
-├── .env               # Configuration and API keys
+├── frontend/
+│   ├── login.html
+│   ├── chat.html
+│   ├── css/
+│   │   └── style.css
+│   └── js/
+│       ├── login.js
+│       └── chat.js
+│
+├── backend/
+│   ├── main.py
+│   ├── database.py
+│   ├── auth.py
+│   ├── rag.py
+│   ├── llm.py
+│   ├── document_loader.py
+│   ├── create_faiss.py
+│   ├── search_faiss.py
+│  
+│
+├── documents/
+│   ├── company.pdf
+│   └── product.pdf
+│
+├── vector_db/
+│   └── faiss_index/
+│
+├── .env
+├── requirements.txt
 ├── .gitignore
 └── README.md
-```
+'''
 
 ## Technologies
 
@@ -110,6 +132,8 @@ OPENAI_API_KEY=your_api_key
 2. uvicorn main:app --reload
 
 Run in Web browser " http://127.0.0.1:5500/login.html "
+
+
 
 ## Future Improvements
 
