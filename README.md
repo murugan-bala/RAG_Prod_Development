@@ -3,7 +3,7 @@
 A simple RAG-based web application built using **HTML, CSS, JavaScript, FastAPI, MySQL, FAISS, and OpenAI API**.
 
 ## Project Structure
-
+```text
 rag_project/
 │
 ├── frontend/
@@ -37,6 +37,7 @@ rag_project/
 ├── requirements.txt
 ├── .gitignore
 └── README.md
+'''
 
 ## Technologies
 
