@@ -182,3 +182,20 @@ margin: 10px auto;
 }
 
 }
+
+.source-message {
+  align-self: flex-start;
+  margin-top: -5px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #666;
+  background: #f8f9fa;
+  border-radius: 6px;
+  max-width: 70%;
+}
+
+.source-message strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+}
