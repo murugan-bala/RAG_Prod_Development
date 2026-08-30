@@ -109,7 +109,7 @@ OPENAI_API_KEY=your_api_key
 1. python -m http.server 5500 --directory frontend
 2. uvicorn main:app --reload
 
-
+Run in Web browser " http://127.0.0.1:5500/login.html "
 
 ## Future Improvements
 
