@@ -102,7 +102,14 @@ Create `.env`:
 
 ```text
 OPENAI_API_KEY=your_api_key
+
 ```
+
+## Run open in two terminals for Frontend and backend 
+1. python -m http.server 5500 --directory frontend
+2. uvicorn main:app --reload
+
+
 
 ## Future Improvements
 
