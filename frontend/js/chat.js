@@ -18,19 +18,17 @@ sendButton.addEventListener("click", function () {
 });
 
 
-// Press Enter to send
-questionInput.addEventListener("keydown", function (event) {
+// Enter key
+questionInput.addEventListener("keyup", function (event) {
 
     if (event.key === "Enter") {
-
-        event.preventDefault();
-
         sendQuestion();
     }
+
 });
 
 
-// Send question to FastAPI
+// Send question
 async function sendQuestion() {
 
     const question = questionInput.value.trim();
@@ -39,18 +37,12 @@ async function sendQuestion() {
         return;
     }
 
-    console.log("Sending question:", question);
-
-    // Show user message
     addMessage(question, "user");
 
-    // Clear input
     questionInput.value = "";
 
-    // Disable button
     sendButton.disabled = true;
 
-    // Show thinking message
     const thinkingMessage = addMessage(
         "Thinking...",
         "bot"
@@ -84,7 +76,6 @@ async function sendQuestion() {
 
         console.log("Response:", data);
 
-        // Remove thinking message
         thinkingMessage.remove();
 
         // Show answer
@@ -93,12 +84,15 @@ async function sendQuestion() {
             "bot"
         );
 
+        // Show PDF sources
+        if (data.sources && data.sources.length > 0) {
+
+            addSources(data.sources);
+        }
+
     } catch (error) {
 
-        console.error(
-            "Chat error:",
-            error
-        );
+        console.error("Chat error:", error);
 
         thinkingMessage.remove();
 
@@ -108,41 +102,78 @@ async function sendQuestion() {
         );
     }
 
-    // Enable button
     sendButton.disabled = false;
 
-    // Focus input again
     questionInput.focus();
 }
 
 
-// Add message to chat
+// Add normal chat message
 function addMessage(message, type) {
 
     const messageDiv =
         document.createElement("div");
 
     if (type === "user") {
-
-        messageDiv.className =
-            "user-message";
-
+        messageDiv.className = "user-message";
     } else {
-
-        messageDiv.className =
-            "bot-message";
+        messageDiv.className = "bot-message";
     }
 
     messageDiv.textContent = message;
 
-    chatMessages.appendChild(
-        messageDiv
-    );
+    chatMessages.appendChild(messageDiv);
 
     chatMessages.scrollTop =
         chatMessages.scrollHeight;
 
     return messageDiv;
+}
+
+
+// Add PDF source names
+function addSources(sources) {
+
+    const sourceDiv =
+        document.createElement("div");
+
+    sourceDiv.className = "source-message";
+
+    const title =
+        document.createElement("strong");
+
+    title.textContent = "Sources:";
+
+    sourceDiv.appendChild(title);
+
+
+    const uniqueFiles = [];
+
+    sources.forEach(function (source) {
+
+        if (!uniqueFiles.includes(source.file_name)) {
+
+            uniqueFiles.push(source.file_name);
+        }
+    });
+
+
+    uniqueFiles.forEach(function (fileName) {
+
+        const fileDiv =
+            document.createElement("div");
+
+        fileDiv.textContent =
+            "📄 " + fileName;
+
+        sourceDiv.appendChild(fileDiv);
+    });
+
+
+    chatMessages.appendChild(sourceDiv);
+
+    chatMessages.scrollTop =
+        chatMessages.scrollHeight;
 }
 
 
@@ -156,13 +187,9 @@ logoutButton.addEventListener(
 
         if (confirmLogout) {
 
-            localStorage.removeItem(
-                "username"
-            );
+            localStorage.removeItem("username");
 
-            localStorage.removeItem(
-                "token"
-            );
+            localStorage.removeItem("token");
 
             window.location.href =
                 "login.html";
