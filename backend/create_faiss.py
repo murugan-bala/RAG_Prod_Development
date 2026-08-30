@@ -5,81 +5,142 @@ import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
-from document_loader import load_pdf, create_chunks
+from document_loader import (
+    load_all_pdfs,
+    create_chunks
+)
 
 
-PDF_PATH = "../documents/Config steps - FernTel IP Phones.pdf"
+DOCUMENTS_FOLDER = "../documents"
 FAISS_FOLDER = "../vector_db/faiss_index"
 
 
-# Load embedding model
-model = SentenceTransformer("all-MiniLM-L6-v2")
+model = SentenceTransformer(
+    "all-MiniLM-L6-v2"
+)
 
 
 def create_embeddings(chunks):
+
     embeddings = model.encode(
         chunks,
         convert_to_numpy=True,
         show_progress_bar=True
     )
 
-    return np.asarray(
+    embeddings = np.asarray(
         embeddings,
         dtype="float32"
     )
 
+    faiss.normalize_L2(
+        embeddings
+    )
+
+    return embeddings
+
 
 def main():
 
-    print("Loading PDF...")
+    print("Loading PDF documents...")
 
-    text = load_pdf(PDF_PATH)
-
-    print("Creating chunks...")
-
-    chunks = create_chunks(
-        text,
-        chunk_size=500,
-        chunk_overlap=50
+    documents = load_all_pdfs(
+        DOCUMENTS_FOLDER
     )
 
-    print("Number of chunks:", len(chunks))
+    all_chunks = []
+    metadata = []
 
+    for document in documents:
+
+        file_name = document["file_name"]
+        text = document["text"]
+
+        chunks = create_chunks(
+            text,
+            chunk_size=500,
+            chunk_overlap=50
+        )
+
+        print(
+            file_name,
+            "->",
+            len(chunks),
+            "chunks"
+        )
+
+        for chunk in chunks:
+
+            all_chunks.append(chunk)
+
+            metadata.append({
+                "file_name": file_name,
+                "chunk": chunk
+            })
+
+    print()
+    print(
+        "Total chunks:",
+        len(all_chunks)
+    )
+
+    print()
     print("Creating embeddings...")
 
-    embeddings = create_embeddings(chunks)
+    embeddings = create_embeddings(
+        all_chunks
+    )
 
-    print("Embedding shape:", embeddings.shape)
+    print(
+        "Embedding shape:",
+        embeddings.shape
+    )
 
-    # Get embedding dimension
     dimension = embeddings.shape[1]
 
-    # Create FAISS index
-    index = faiss.IndexFlatL2(dimension)
+    index = faiss.IndexFlatIP(
+        dimension
+    )
 
-    # Add embeddings
-    index.add(embeddings)
+    index.add(
+        embeddings
+    )
 
-    # Create folder
-    os.makedirs(FAISS_FOLDER, exist_ok=True)
+    os.makedirs(
+        FAISS_FOLDER,
+        exist_ok=True
+    )
 
-    # Save FAISS index
     faiss.write_index(
         index,
         f"{FAISS_FOLDER}/index.faiss"
     )
 
-    # Save chunks
     with open(
         f"{FAISS_FOLDER}/chunks.pkl",
         "wb"
     ) as file:
 
-        pickle.dump(chunks, file)
+        pickle.dump(
+            all_chunks,
+            file
+        )
 
-    print("FAISS index created successfully.")
+    with open(
+        f"{FAISS_FOLDER}/metadata.pkl",
+        "wb"
+    ) as file:
+
+        pickle.dump(
+            metadata,
+            file
+        )
+
+    print()
+    print(
+        "FAISS index created successfully."
+    )
 
 
 if __name__ == "__main__":
     main()
-

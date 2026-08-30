@@ -1,12 +1,15 @@
+import os
 from pypdf import PdfReader
 
 
 def load_pdf(file_path):
+
     reader = PdfReader(file_path)
 
     text = ""
 
     for page in reader.pages:
+
         page_text = page.extract_text()
 
         if page_text:
@@ -16,7 +19,36 @@ def load_pdf(file_path):
     return text
 
 
-def create_chunks(text, chunk_size=500, chunk_overlap=50):
+def load_all_pdfs(folder_path):
+
+    documents = []
+
+    for file_name in os.listdir(folder_path):
+
+        if file_name.lower().endswith(".pdf"):
+
+            file_path = os.path.join(
+                folder_path,
+                file_name
+            )
+
+            print("Loading:", file_name)
+
+            text = load_pdf(file_path)
+
+            documents.append({
+                "file_name": file_name,
+                "text": text
+            })
+
+    return documents
+
+
+def create_chunks(
+    text,
+    chunk_size=500,
+    chunk_overlap=50
+):
 
     chunks = []
 

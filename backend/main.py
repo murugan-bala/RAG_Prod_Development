@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from auth import check_login
-from rag import get_rag_response
+from rag import get_response
 from database import get_database_connection
 
 
@@ -82,8 +82,9 @@ def chat(request: ChatRequest):
 
     # Test RAG
     try:
-        answer = get_rag_response(request.question)
-        print("4. RAG response:", answer)
+        result = get_response(request.question)
+        answer = result["answer"]
+        sources = result["sources"]
     except Exception as e:
         print("ERROR in RAG:", e)
         return {
@@ -129,6 +130,9 @@ def chat(request: ChatRequest):
     print("8. Sending response to frontend")
 
     return {
-        "success": True,
-        "answer": answer
+    "success": True,
+    "username": request.username,
+    "question": request.question,
+    "answer": answer,
+    "sources": sources
     }

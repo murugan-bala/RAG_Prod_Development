@@ -1,24 +1,46 @@
 from search_faiss import search_faiss
-from llm import generate_answer
+from llm import generate_answer, generate_normal_answer
 
 
-def get_rag_response(question):
+SIMILARITY_THRESHOLD = 0.70
 
-    # Search relevant chunks
+
+def get_response(question):
+
     results = search_faiss(question)
 
-    # Combine chunks
-    context = "\n\n".join(results)
+    best_score = results[0]["score"]
 
-    # Generate answer using OpenAI
-    answer = generate_answer(
-        question,
-        context
-    )
+    print("Best similarity score:", best_score)
 
-    return answer
+    if best_score >= SIMILARITY_THRESHOLD:
 
+        print("Routing to RAG")
 
-'''def get_rag_response(question: str) -> str:
+        context = "\n\n".join(
+            result["chunk"]
+            for result in results
+        )
 
-    return f"RAG response will come here for: {question}"'''
+        answer = generate_answer(
+            question,
+            context
+        )
+
+        return {
+            "answer": answer,
+            "sources": results
+        }
+
+    else:
+
+        print("Routing to normal LLM")
+
+        answer = generate_normal_answer(
+            question
+        )
+
+        return {
+            "answer": answer,
+            "sources": []
+        }

@@ -44,7 +44,21 @@ Question:
     return response.choices[0].message.content
 
 
+def generate_normal_answer(question):
 
-def ask_llm(prompt: str) -> str:
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a helpful general-purpose assistant."
+            },
+            {
+                "role": "user",
+                "content": question
+            }
+        ],
+        temperature=0.7
+    )
 
-    return f"LLM response for: {prompt}"
+    return response.choices[0].message.content
